@@ -1,0 +1,43 @@
+[package]
+name = "avr-async"
+version = "0.1.0"
+authors = ["David Morrison <drmorr@evokewonder.com>"]
+edition = "2018"
+
+[features]
+default = ["rt"]
+rt = ["atmega328p-hal/rt"]
+atmega328p = ["atmega328p-hal"]
+# atmega8u2 = ["atmega8u2-hal"]
+
+[dependencies.minarray]
+git = "https://github.com/drmorr0/minarray"
+
+[dependencies.avr-hal-generic]
+git = "https://github.com/Rahix/avr-hal"
+rev = "a202778"
+
+[dependencies.atmega328p-hal]
+git = "https://github.com/Rahix/avr-hal"
+features = ["atmega328p"]
+rev = "a202778"
+optional = true
+
+# [dependencies.atmega8u2-hal]
+# git = "https://github.com/Rahix/avr-hal"
+# features = ["atmega328p"]
+# rev = "d17a441"
+# optional = true
+
+# Configure the build for minimal size
+[profile.dev]
+panic = "abort"
+lto = true
+opt-level = "s"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+debug = true
+lto = true
+opt-level = "s"
