@@ -33,7 +33,7 @@ impl Future for Waiter {
             self.interrupt_set = false;
             return Poll::Ready(());
         } else if !self.interrupt_set {
-            register_timed_waker(self.trigger_time_ms, ctx.waker().clone()).unwrap();
+            register_timed_waker(self.trigger_time_ms, ctx.waker().clone());
             self.interrupt_set = true;
         }
         Poll::Pending

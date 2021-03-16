@@ -1,12 +1,8 @@
 #[cfg(feature = "atmega328p")]
 use atmega328p_hal::pac::TC0;
-use avr_hal_generic::{
-    avr_device,
-    avr_device::interrupt::free as critical_section,
-};
 #[cfg(feature = "atmega8u2")]
-use atmega8u2p_hal::{
-    pac::TC0,
+use atmega8u2p_hal::pac::TC0;
+use avr_hal_generic::{
     avr_device,
     avr_device::interrupt::free as critical_section,
 };
@@ -71,18 +67,24 @@ pub fn millis() -> u32 {
     critical_section(|_| unsafe { ELAPSED_MS })
 }
 
-pub fn register_timed_waker(trigger_time_ms: u32, waker: Waker) -> Result<(), Waker> {
+pub fn register_timed_waker(trigger_time_ms: u32, waker: Waker) {
     critical_section(|_| unsafe {
-        WAITERS.push(trigger_time_ms, waker)
-    })
+        match WAITERS.push(trigger_time_ms, waker) {
+            // Calling .unwrap() on the above makes the entire thing break; I think perhaps
+            // unwrap while in a Future is somehow broken in the rust compiler...?
+            _ => (),
+        }
+    });
 }
 
-#[avr_device::interrupt(atmega328p)]
+#[cfg_attr(feature = "atmega328p", avr_device::interrupt(atmega328p))]
+#[cfg_attr(feature = "atmega8u2", avr_device::interrupt(atmega8u2))]
 unsafe fn TIMER0_OVF() {
     TIMER0_OVF_COUNT += 1;
 }
 
-#[avr_device::interrupt(atmega328p)]
+#[cfg_attr(feature = "atmega328p", avr_device::interrupt(atmega328p))]
+#[cfg_attr(feature = "atmega8u2", avr_device::interrupt(atmega8u2))]
 unsafe fn TIMER0_COMPA() {
     ELAPSED_MS += 1;
 
