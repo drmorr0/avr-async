@@ -8,7 +8,16 @@ use core::{
 
 pub const NTASKS: usize = 8;
 static mut EXECUTOR: Executor = Executor {
-    drivers: [MaybeUninit::uninit(); NTASKS],
+    drivers: [
+        MaybeUninit::uninit(),
+        MaybeUninit::uninit(),
+        MaybeUninit::uninit(),
+        MaybeUninit::uninit(),
+        MaybeUninit::uninit(),
+        MaybeUninit::uninit(),
+        MaybeUninit::uninit(),
+        MaybeUninit::uninit(),
+    ],
     drivers_len: 0,
     work_queue: [false; NTASKS],
 };

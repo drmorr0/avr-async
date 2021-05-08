@@ -3,7 +3,6 @@
 #![feature(llvm_asm)]
 #![feature(never_type)]
 #![feature(maybe_uninit_ref)]
-#![feature(const_in_array_repeat_expressions)]
 
 mod driver;
 mod executor;
